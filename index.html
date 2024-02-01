@@ -5,60 +5,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Search</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
 <body>
-    <!-- Navigation Bar -->
+    <!-- Nav Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">VideoHub</a>
-            <!-- Search Bar -->
-            <form class="d-flex">
-                <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="button" onclick="searchYouTubeVideos()">Search</button>
-            </form>
+            <a class="navbar-brand" href="#">FlavorFusion</a>
         </div>
     </nav>
 
-    <!-- Video List Section -->
+    <div class="container mt-5 text-center">
+        <button class="btn btn-outline-success" type="button" onclick="searchYouTubeVideos()">Search</button>
+    </div>
+
+    <!-- Video List -->
     <div class="container mt-5">
-        <h1 class="display-4">Search Results</h1>
+        <h1 class="display-4">Top Results</h1>
         <div class="row" id="videoList">
-            <!-- Videos will be dynamically added here -->
+            <!-- Videos here -->
         </div>
     </div>
 
-    <!-- Bootstrap JS (optional, for Bootstrap components that require JS) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- YouTube API Script -->
     <script>
         const apiKey = 'AIzaSyDiNM5irWOw3mw-CPcogKOxzmQMuYaIni8';
+        const searchQuery = 'FlavorFusion';
 
         function searchYouTubeVideos() {
-            // Get the search query from the input field
-            const searchQuery = document.getElementById('searchInput').value;
+            
 
-            // Function to fetch videos from YouTube API based on search query
+            // Function to fetch videos
             function fetchYouTubeVideos() {
                 const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${searchQuery}&key=${apiKey}`;
 
                 fetch(apiUrl)
                     .then(response => response.json())
                     .then(data => {
-                        // Clear previous search results
+                        // Clear previous
                         document.getElementById('videoList').innerHTML = '';
 
-                        // Loop through the videos and display them
+                        // Loop
                         const videoListElement = document.getElementById('videoList');
                         data.items.forEach(item => {
                             const videoId = item.id.videoId;
                             const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
                             const videoThumbnail = item.snippet.thumbnails.medium.url;
 
-                            // Create a Bootstrap card for each video
+                            // Create a Bootstrap card
                             const videoCard = document.createElement('div');
                             videoCard.className = 'col-md-4 mb-4';
                             videoCard.innerHTML = `
@@ -71,14 +68,14 @@
                                 </div>
                             `;
 
-                            // Append the card to the video list
+                            // Append the video
                             videoListElement.appendChild(videoCard);
                         });
                     })
                     .catch(error => console.error('Error fetching YouTube videos:', error));
             }
 
-            // Call the fetchYouTubeVideos function
+            // Call the function
             fetchYouTubeVideos();
         }
     </script>
