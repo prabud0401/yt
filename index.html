@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video List</title>
+    <title>YouTube Video Search</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
@@ -14,12 +14,17 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">VideoHub</a>
+            <!-- Search Bar -->
+            <form class="d-flex">
+                <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="button" onclick="searchYouTubeVideos()">Search</button>
+            </form>
         </div>
     </nav>
 
     <!-- Video List Section -->
     <div class="container mt-5">
-        <h1 class="display-4">Featured Videos</h1>
+        <h1 class="display-4">Search Results</h1>
         <div class="row" id="videoList">
             <!-- Videos will be dynamically added here -->
         </div>
@@ -30,46 +35,52 @@
 
     <!-- YouTube API Script -->
     <script>
-        // Replace 'YOUR_API_KEY' with your actual YouTube Data API key
         const apiKey = 'AIzaSyDiNM5irWOw3mw-CPcogKOxzmQMuYaIni8';
-        const searchQuery = 'food'; // Replace with your desired search query
 
-        // Function to fetch videos from YouTube API based on search query
-        function fetchYouTubeVideos() {
-            const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${searchQuery}&key=${apiKey}`;
+        function searchYouTubeVideos() {
+            // Get the search query from the input field
+            const searchQuery = document.getElementById('searchInput').value;
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    // Loop through the videos and display them
-                    const videoListElement = document.getElementById('videoList');
-                    data.items.forEach(item => {
-                        const videoId = item.id.videoId;
-                        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-                        const videoThumbnail = item.snippet.thumbnails.medium.url;
+            // Function to fetch videos from YouTube API based on search query
+            function fetchYouTubeVideos() {
+                const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${searchQuery}&key=${apiKey}`;
 
-                        // Create a Bootstrap card for each video
-                        const videoCard = document.createElement('div');
-                        videoCard.className = 'col-md-4 mb-4';
-                        videoCard.innerHTML = `
-                            <div class="card">
-                                <img src="${videoThumbnail}" class="card-img-top" alt="Video Thumbnail">
-                                <div class="card-body">
-                                    <h5 class="card-title">${item.snippet.title}</h5>
-                                    <a href="${videoUrl}" class="btn btn-primary" target="_blank">Watch Video</a>
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear previous search results
+                        document.getElementById('videoList').innerHTML = '';
+
+                        // Loop through the videos and display them
+                        const videoListElement = document.getElementById('videoList');
+                        data.items.forEach(item => {
+                            const videoId = item.id.videoId;
+                            const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+                            const videoThumbnail = item.snippet.thumbnails.medium.url;
+
+                            // Create a Bootstrap card for each video
+                            const videoCard = document.createElement('div');
+                            videoCard.className = 'col-md-4 mb-4';
+                            videoCard.innerHTML = `
+                                <div class="card">
+                                    <img src="${videoThumbnail}" class="card-img-top" alt="Video Thumbnail">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${item.snippet.title}</h5>
+                                        <a href="${videoUrl}" class="btn btn-primary" target="_blank">Watch Video</a>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
 
-                        // Append the card to the video list
-                        videoListElement.appendChild(videoCard);
-                    });
-                })
-                .catch(error => console.error('Error fetching YouTube videos:', error));
+                            // Append the card to the video list
+                            videoListElement.appendChild(videoCard);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching YouTube videos:', error));
+            }
+
+            // Call the fetchYouTubeVideos function
+            fetchYouTubeVideos();
         }
-
-        // Call the fetchYouTubeVideos function
-        fetchYouTubeVideos();
     </script>
 </body>
 
